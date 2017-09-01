@@ -1,5 +1,6 @@
 """Classes for melon orders."""
 
+import random
 
 class AbstractMelonOrder(object):
     """General Melon order class"""
@@ -18,7 +19,7 @@ class AbstractMelonOrder(object):
     def get_total(self):
         """Calculate price, including tax."""
 
-        base_price = 5
+        base_price = self.get_base_price()
         if self.species == "christmas melon":
             base_price = base_price * 1.5
 
@@ -30,6 +31,12 @@ class AbstractMelonOrder(object):
         """Record the fact than an order has been shipped."""
 
         self.shipped = True
+
+    def get_base_price(self):
+        """Implements random "Splurge Pricing" base price"""
+
+        base_price = random.randint(5, 9)
+        return base_price
 
 
 class DomesticMelonOrder(AbstractMelonOrder):
@@ -45,7 +52,8 @@ class InternationalMelonOrder(AbstractMelonOrder):
 
     def __init__(self, species, qty, country_code):
         """Initialize melon order attributes."""
-        super(InternationalMelonOrder, self).__init__(species, qty, "international", 0.17)
+        super(InternationalMelonOrder, self).__init__(species, qty,
+            "international", 0.17)
 
         self.country_code = country_code
 
@@ -66,7 +74,8 @@ class GovernmentMelonOrder(AbstractMelonOrder):
 
     def __init__(self, species, qty):
         """Initializes melon order attributes"""
-        super(GovernmentMelonOrder, self).__init__(species, qty, "government", 0.00)
+        super(GovernmentMelonOrder, self).__init__(species, qty,
+                                "government", 0.00)
 
         self.passed_inspection = False
 
