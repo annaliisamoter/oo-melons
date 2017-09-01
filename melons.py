@@ -1,6 +1,7 @@
 """Classes for melon orders."""
 
 import random
+import datetime
 
 class AbstractMelonOrder(object):
     """General Melon order class"""
@@ -15,6 +16,7 @@ class AbstractMelonOrder(object):
         self.shipped = False
         self.order_type = order_type
         self.tax = tax
+        self.time_of_order = datetime.datetime.now()
 
     def get_total(self):
         """Calculate price, including tax."""
@@ -36,6 +38,12 @@ class AbstractMelonOrder(object):
         """Implements random "Splurge Pricing" base price"""
 
         base_price = random.randint(5, 9)
+        week_day = datetime.datetime.weekday(self.time_of_order)
+        hour = self.time_of_order.hour
+
+        if week_day in range(0, 5) and hour in range(8, 11):
+            base_price = base_price + 4
+
         return base_price
 
 
