@@ -3,20 +3,24 @@
 import random
 import datetime
 
+
+class TooManyMelonsError(ValueError):
+    """Catches orders greater than 100 and flags them"""
+
+
 class AbstractMelonOrder(object):
     """General Melon order class"""
 
 
-
-    def __init__(self, species, qty, order_type, tax):
+    def __init__(self, species, qty):
         """Initialize melon order attributes"""
 
         self.species = species
         self.qty = qty
         self.shipped = False
-        self.order_type = order_type
-        self.tax = tax
         self.time_of_order = datetime.datetime.now()
+        if self.qty > 100:
+            raise TooManyMelonsError('Too many melons!')
 
     def get_total(self):
         """Calculate price, including tax."""
@@ -50,18 +54,23 @@ class AbstractMelonOrder(object):
 class DomesticMelonOrder(AbstractMelonOrder):
     """A melon order within the USA."""
 
+    order_type = 'Domestic'
+    tax = 0.08
+
     def __init__(self, species, qty):
         """Initialize melon order attributes."""
-        super(DomesticMelonOrder, self).__init__(species, qty, "domestic", 0.08)
+        super(DomesticMelonOrder, self).__init__(species, qty)
 
 
 class InternationalMelonOrder(AbstractMelonOrder):
     """An international (non-US) melon order."""
 
+    order_type = 'International'
+    tax = 0.17
+
     def __init__(self, species, qty, country_code):
         """Initialize melon order attributes."""
-        super(InternationalMelonOrder, self).__init__(species, qty,
-            "international", 0.17)
+        super(InternationalMelonOrder, self).__init__(species, qty)
 
         self.country_code = country_code
 
@@ -80,10 +89,12 @@ class InternationalMelonOrder(AbstractMelonOrder):
 class GovernmentMelonOrder(AbstractMelonOrder):
     """Melon order from the government."""
 
+    order_type = 'Government'
+    tax = 0.00
+
     def __init__(self, species, qty):
         """Initializes melon order attributes"""
-        super(GovernmentMelonOrder, self).__init__(species, qty,
-                                "government", 0.00)
+        super(GovernmentMelonOrder, self).__init__(species, qty)
 
         self.passed_inspection = False
 
@@ -91,3 +102,5 @@ class GovernmentMelonOrder(AbstractMelonOrder):
         """Marks order as having passed inspection"""
         if passed is True:
             self.passed_inspection = True
+
+
